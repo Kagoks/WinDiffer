@@ -1,0 +1,23 @@
+{
+  "name": "windiffelectron",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Kevin Lévesque",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^1.7.5"
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0-beta",
+    "jquery": "^3.2.1",
+    "linq": "^3.0.8",
+    "moment": "^2.18.1",
+    "node-powershell": "^3.1.1",
+    "powershell": "^2.2.0",
+    "windows-powershell": "^0.1.1"
+  }
+}

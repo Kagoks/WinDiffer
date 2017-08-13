@@ -1,0 +1,55 @@
+
+html, body, .container-fluid{
+    height: 100%
+}
+
+.tab-content{
+    height: 92%
+}
+
+
+#btnStartScan {
+    min-width: 85%;
+    height: 50px;
+}
+
+#btnStartScan:hover{
+    cursor: pointer;
+}
+
+.scan-progressbar{
+    height: 30px;
+}
+
+.large-container{
+    margin: 10px 0px 10px 0px;
+}
+
+.large-container .progress{
+    max-width: 98%;
+    margin: 0 auto;
+}
+
+.center-content{
+    text-align: center;
+}
+
+.scan-logs-container{
+    text-align: left;
+    font-size: small;
+    height: 180px;
+    
+}
+
+.large-container.scan-logs-container{
+    max-width: 98%;
+    margin: 0 auto;
+}
+
+.scan-logs{
+    overflow: auto;
+}
+
+.modules-container{
+    overflow: auto;
+}

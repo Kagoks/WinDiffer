@@ -15,44 +15,92 @@
         <nav class="nav nav-tabs" id="myTab" role="tablist">
             <a class="nav-item nav-link active" id="nav-scan-tab" data-toggle="tab" href="#nav-scan" role="tab" aria-controls="nav-scan" aria-expanded="true">Scan</a>
             <a class="nav-item nav-link" id="nav-compare-tab" data-toggle="tab" href="#nav-compare" role="tab" aria-controls="nav-compare">Compare</a>
-            <a class="nav-item nav-link" id="nav-results-tab" data-toggle="tab" href="#nav-results" role="tab" aria-controls="nav-results" aria-expanded="true">Result</a>            
+            <a class="nav-item nav-link" id="nav-results-tab" data-toggle="tab" href="#nav-results" role="tab" aria-controls="nav-results" aria-expanded="true">Results</a>            
         </nav>
-        <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-scan" role="tabpanel" aria-labelledby="nav-scan-tab" style="display:flex;flex-flow: column;height:100%">
-            
-        
-        <div class="row modules-container" style="flex:1 1 auto;">
-            <div class="col-sm-6 checkboxes first">
-            </div>       
-            <div class="col-sm-6 checkboxes second">
-            </div>          
-        </div>
-    
+        <div class="tab-content fullheight" id="nav-tabContent">
 
-        <div style="flex: 0 1 auto">
-                <div class="large-container center-content">
-                        <button class="btn btn-secondary" id="btnStartScan">Start Scan</button>                    
-                </div>
-    
-    
-                <div class="large-container center-content card scan-logs-container">
-                        <div class="card-body scan-logs"></div>              
-                </div>
-    
-    
-                <div class="large-container">
-                    <div class="progress ">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated scan-progressbar" role="progressbar" style="width: 0%;height: 30px" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            <!--SCAN TAB-->
+            <div class="tab-pane fade show active tab-scan fullheight" id="nav-scan" role="tabpanel" aria-labelledby="nav-scan-tab">
+                <div style="flex:1 1 auto;">
+                    <div class="form-check check-all">
+                        <label class="form-check-label">
+                            <input type="checkbox" id="check-all-modules">
+                            Toggle all
+                        </label>
+                    </div>
+                    <div class="row modules-container">
+                        <div class="col-sm-6 checkboxes first">
+                        </div>       
+                        <div class="col-sm-6 checkboxes second">
+                        </div>          
+                    </div>
+                </div>   
+                <div style="flex: 0 1 auto; position: fixed; bottom: 0; width:100%">
+                    <div class="large-container center-content">
+                           <button class="btn btn-secondary" id="btnStartScan">Start Scan</button>                    
+                    </div>         
+        
+                    <div class="large-container center-content card scan-logs-container">
+                            <div class="card-body scan-logs"></div>              
+                    </div>        
+        
+                    <div class="large-container">
+                        <div class="progress ">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated scan-progressbar" role="progressbar" style="width: 0%;height: 30px" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
                     </div>
                 </div>
-        </div>
+            </div>
 
+            <!--COMPARE TAB-->
+            <div class="tab-pane fade fullheight" id="nav-compare" role="tabpanel" aria-labelledby="nav-compare-tab">
+                <div style="flex: 0 1 auto">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="cboBefore">Before scan</label>
+                                <select class="form-control" id="cboBefore"></select>
+                            </div>                            
+                        </div>    
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="cboAfter">After scan</label>
+                                <select class="form-control" id="cboAfter"></select>
+                            </div>  
+                        </div>  
+                    </div>
+                </div>   
+                <div style="flex: 0 1 auto" class="fullheight">
+                    <div class="row fullheight">
+                        <div class="col-6 fullheight">
+                            <div class="card fullheight">
+                                <div class="card-body scan-result" id="scanResultsBefore"></div>              
+                            </div>                             
+                        </div>    
+                        <div class="col-6">
+                            <div class="card fullheight">
+                                <div class="card-body scan-result" id="scanResultsAfter"></div>              
+                            </div>  
+                        </div>  
+                    </div>
+                </div>
 
+                <div class="large-container center-content">
+                    <button class="btn btn-secondary" id="btnStartCompare">Start Compare</button>                    
+                </div>          
+     
+                <div class="large-container">
+                    <div class="progress ">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated compare-progressbar" role="progressbar" style="width: 0%;height: 30px" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
 
-        </div>
-        <div class="tab-pane fade" id="nav-compare" role="tabpanel" aria-labelledby="nav-compare-tab">b</div>
-        <div class="tab-pane fade" id="nav-results" role="tabpanel" aria-labelledby="nav-results-tab">c</div>
+            <!--RESULTS TAB-->
+            <div class="tab-pane fade" id="nav-results" role="tabpanel" aria-labelledby="nav-results-tab">c</div>
     </div>
+
+</div>
 
 
 

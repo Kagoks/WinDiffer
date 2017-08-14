@@ -3,6 +3,7 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const moment = require('moment');
 const uiWriter = require('./UIWriter');
+const os = require('os');
 
 
 module.exports = {
@@ -18,23 +19,31 @@ module.exports = {
         modulesScanned = 0;
         updateScanProgressBar();
 
-        uiWriter.writeToScanLog("Scan started.")
+        if(totalModules == 0){        
+            uiWriter.writeToScanLog("No module selected.")    
+            return _callback();
+        }
 
-        modulesManager.modules.forEach(function(element) {
 
-            if(!modulesToScan.includes(element.moduleId)){
+        modulesManager.modules.forEach(function(scanModule) {
+
+            if(!modulesToScan.includes(scanModule.moduleId)){
                 return;
             }
-            uiWriter.writeToScanLog("Starting scan for : " + element.moduleName + ".");
-            element.scan().then(function(data){
-                if(data){                    
-                    data = JSON.parse(data);
-                    uiWriter.writeToScanLog("Scan completed for : " + element.moduleName + "finished. Found " + data.length + " elements.");
+            uiWriter.writeToScanLog("Starting scan for : " + scanModule.moduleName + ".");
+            scanModule.scan().then(function(scanData){
+                if(scanData){     
+                    var data = [];                
+                    scanData = JSON.parse(scanData);
+                    scanData.forEach(function(x){
+                        data.push(scanModule.buildItem(x));
+                    })
+                    uiWriter.writeToScanLog("Scan completed for : " + scanModule.moduleName + ". Found " + data.length + " scanModules.");
                     console.log(data);
-                    results.push({'module' : element.moduleId, data});
+                    results.push({'module' : scanModule.moduleId, data});
                 }
                 else{
-                    console.log("No data for " + element.moduleName + "scan")
+                    console.log("No data for " + scanModule.moduleName + "scan")
                 }
 
                 modulesScanned++;
@@ -63,14 +72,15 @@ scanCompleted = function(results){
     console.log(results);
 
     uiWriter.writeToScanLog("Scan completed.")
-   
-    mkdirp("C:\\Temp\\WindowsDiff\\Results\\", function(){
+
+    var dir = os.homedir() + "\\WindowsDiff\\Results\\";
+
+    mkdirp(dir, function(){
         var dateTime = moment().format("YYYYMMDD_HHmmss");
-        fs.writeFile("C:\\Temp\\WindowsDiff\\Results\\"+dateTime+".json", JSON.stringify(results), function(err){ });
-        uiWriter.writeToScanLog("Saved result in file : C:\\Temp\\WindowsDiff\\Results\\"+dateTime+".json")
+        var filename = dir+dateTime+".json";
+        fs.writeFile(filename, JSON.stringify(results), function(err){ });
+        uiWriter.writeToScanLog("Saved result in file : " + filename);        
     });
-
-
 
 }
 

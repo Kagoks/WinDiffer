@@ -1,58 +1,64 @@
-const modulesManager = require('./ModulesManager');
-const scan = require('./Scan');
+const controller = require('./Controller');
+const uiWriter = require('./UIWriter');
 const notifier = require('node-notifier');
-const fs = require('fs');
-const os = require('os');
-const compare = require('./Compare');
 
 module.exports = {
     init : function(){
-        loadModules();
+        loadScanTab()
     }
 }
 
+$('a#nav-scan-tab').click(function(e){
+    loadScanTab();
+});
 
-var loadModules = function(){
+$('a#nav-compare-tab').click(function(){
+    loadCompareTab();
+});
 
-    var addToFirst = true;
+    
+$('a#nav-results-tab').click(function(){
+    loadResultsTab();       
+});
+        
 
-    modulesManager.modules.forEach(function(element) {
-        var div = ''
-        if(addToFirst){
-            var div = '.checkboxes.first';
-            //addToFirst = false; //This will force modules to span over to the second column
-        }
-        else {
-            var div = '.checkboxes.second';
-            addToFirst = true;
-        }
 
-                
-        $(div).append(`<div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" class="chk-module" id="${element.moduleId}">
-                                        ${element.moduleName}
-                                    </label>
-                                 </div>`)
 
-    }, this);
-  
+var loadScanTab = function(){
+
+    $.get('./templates/scanners.hds', function(template){       
+        var template = Handlebars.compile(template);        
+        $('.checkboxes.first').html(template(controller.scanners));
+    });
+
+    $('a#nav-scan-tab').tab('show');
 }
 
 
+
 $("#btnStartScan").click(function(){
-    resetScanLogs();
-    $(this).prop('disabled', true).text('Scan running, please wait...');    
-    scan.launchScan(function(){
-        
+
+    controller.scanRunning = true;
+
+    $(this).prop('disabled', true).text('Scan running, please wait...');  
+    $(".loading.loading-scan").show();
+
+    
+    var scannersIds = $('.chk-module:checked').map(function(){ return this.id }).get();
+    controller.startScan(scannersIds).then(function(){
         notifier.notify({
+            title : "WinDiffer",
             message : "Scan completed!"
         });
+
         setTimeout(function(){
-            $("#btnStartScan").prop('disabled', false).text('Start Scan');  
-            resetScanProgress();
-        }, 1500)
+            $("#btnStartScan").prop('disabled', false).text('Start Scan');
+            controller.scanRunning = false;
+            $(".loading.loading-scan").hide();
+        }, 1500);
+
     });
+
 });
 
 
@@ -61,58 +67,187 @@ $("#check-all-modules").change(function(){
 });
 
 
-var resetScanProgress = function(){
-    $(".progress-bar").width("0%").text("0%");
-} 
+$('#cboBefore').change(function(){
+loadBeforeSnapshopFile();
+});
 
-var resetScanLogs = function(){
-    $(".scan-logs").text("");
-}
+$('#cboAfter').change(function(){
+loadAfterSnapshotFile();
+});
 
 
-$('a#nav-compare-tab').click(function (e) {
+  $("#btnStartCompare").click(function(){
 
-    if($(this).hasClass('active')){
-        return;
-    }
+    controller.compareRunning = true;
+    $(".loading.loading-compare").show();
 
-    fs.readdir(os.homedir() + "\\WindowsDiff\\Results", (err, files) => {
-        
-        if(files.length < 2){
-            return;
-        }
+    $(this).prop('disabled', true).text('Compare running, please wait...');
+    controller.startCompare().then(function(){
 
-        files.reverse().forEach(file => {
-            compare.appendToCombobox(file);
+        setTimeout(function(){
+            $("#btnStartCompare").prop('disabled', false).text('Start compare');
+            controller.compareRunning = false;
+            $(".loading.loading-compare").hide();
+            loadResultsTab();
+        }, 1500);
+    });   
+
+   
+    
+  });
+
+  var loadCompareTab = function(){
+
+    
+    $('#cboBefore').html("<option>Loading, please wait...</option>");
+    $('#cboAfter').html("<option>Loading, please wait...</option>");
+
+    $('a#nav-compare-tab').tab('show');
+
+
+
+    controller.getSnapshotsFiles().then(function(files){
+
+        $('#cboBefore').html("");
+        $('#cboAfter').html("");
+
+        files.forEach(function(file) {
+            $('#cboBefore').append(`<option value="${file}">${file}</option>`)
+            $('#cboAfter').append(`<option value="${file}">${file}</option>`)
         });
 
         $('#cboBefore option:eq(1)').attr('selected', 'selected');
         $('#cboAfter option:eq(0)').attr('selected', 'selected');
 
-        compare.loadBeforeCompareFile();
-        compare.loadAfterCompareFile();
-    });   
+        loadBeforeSnapshopFile();
+        loadAfterSnapshotFile();
 
-    e.preventDefault()
-    compare.reset();
-   
+    });
+  }
+
+
+var loadBeforeSnapshopFile = function(){
+    var file = $('#cboBefore').val();
+
+    $('#scanResultsBefore').fadeOut('fast', function(){
+        $(this).html('Loading, please wait...').fadeIn('fast', function(){
+            controller.getSnapshotFileContent(file).then(function(content){
+                return new Promise(function(resolve, reject){
+                    var jsonContent = JSON.parse(content);
+                    controller.beforeSnapshotData = jsonContent;
+                    var formattedData = jsonPrettyPrint.toHtml(jsonContent);           
+                    resolve(formattedData);
+                });
+            }).then(function(formattedData){
+                $('#scanResultsBefore').fadeOut('fast', function(){
+                    $(this).html("<pre>" + formattedData + "</pre>").fadeIn('fast');
+                });
+                
+            });
+        });
+    }); 
+}
+
+
+var loadAfterSnapshotFile = function(){
+    var file = $('#cboAfter').val();
+
+
+    $('#scanResultsAfter').fadeOut('fast', function(){
+        $(this).html('Loading, please wait...').fadeIn('fast', function(){
+            controller.getSnapshotFileContent(file).then(function(content){                
+                return new Promise(function(resolve, reject){
+                    var jsonContent = JSON.parse(content);
+                    controller.afterSnapshotData = jsonContent;
+                    var formattedData = jsonPrettyPrint.toHtml(jsonContent);           
+                    resolve(formattedData);
+                });
+            }).then(function(formattedData){
+                $('#scanResultsAfter').fadeOut('fast', function(){
+                    $(this).html("<pre>" + formattedData + "</pre>").fadeIn('fast');
+                });                
+            });
+        });
+    }); 
+}
+
+
+
+
+  var loadResultsTab = function(){
+    $('a#nav-results-tab').tab('show');
+
+    controller.getResultsFiles().then(function(files){
+        
+        $('#cboCompare').html("");
+
+        files.forEach(function(file) {
+            $('#cboCompare').append(`<option value="${file}">${file}</option>`)
+        });
+
+        loadResultFile();
+    });
+  }
+
+
+
+  var loadResultFile = function(file){
+
+    var file = $('#cboCompare').val();
+
+    $("#compareResults").fadeOut('fast', function(){
+        $("#compareResults").html("Loading file...").show();
+        controller.getFormattedResultFileContent(file).then(function(content){
+            $("#compareResults").html("<pre>" + content + "</pre>").fadeIn('slow');
+        });                   
+    }); 
+}
+
+
+
+  
+$('a#nav-results-tab').click(function (e) {
     
+    loadResultsTab();
+
+
+    if($(this).hasClass('active')){
+        return;
+    }
+    
+    results.loadResultsTab();
+    
+});
+
+$('#cboCompare').change(function(){
+    loadResultFile();
   });
 
-  $('#cboBefore').change(function(){
-    compare.loadBeforeCompareFile();
-  });
 
-  $('#cboAfter').change(function(){
-    compare.loadAfterCompareFile();
-  });
-
-
-  $("#btnStartCompare").click(function(){
-    $(this).prop('disabled', true).text('Compare running, please wait...');
-    compare.startCompare();
-    $(this).prop('disabled', false).text('Start compare');
-  });
+    
 
 
 
+  var jsonPrettyPrint = {
+    replacer: function(match, pIndent, pKey, pVal, pEnd) {
+       var key = '<span class=json-key>';
+       var val = '<span class=json-value>';
+       var str = '<span class=json-string>';
+       var r = pIndent || '';
+       if (pKey)
+          r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';
+       if (pVal)
+          r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>';
+       return r + (pEnd || '');
+       },
+    toHtml: function(obj) {
+       var jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
+       var data = JSON.stringify(obj, null, 2)
+          .replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
+          .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(jsonLine, jsonPrettyPrint.replacer);
+
+          return data;
+       }
+    };
+ 

@@ -1,4 +1,3 @@
-const modulesManager = require('./ModulesManager');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const moment = require('moment');
@@ -8,108 +7,98 @@ var beautify = require("json-beautify");
 
 
 module.exports = {
-    appendToCombobox : function(file){
-        $('#cboBefore').append(`<option value="${file}">${file}</option>`)
-        $('#cboAfter').append(`<option value="${file}">${file}</option>`)
-    },
 
-    reset : function(){
-        $('#cboBefore').html("");
-        $('#cboAfter').html("");
-    },
 
-    loadBeforeCompareFile : function(){
+    start : function(beforeAllData, afterAllData, scanners){
 
-        $("#scanResultsBefore").fadeOut('fast', function(){
-            $("#scanResultsBefore").html("Loading file...").show();
-            getBeforeFileContent(function(data){
-                data = jsonPrettyPrint.toHtml(JSON.parse(data), function(niceData){
-                    $("#scanResultsBefore").html("<pre>" + niceData + "</pre>").fadeIn('slow');                      
-                });    
-            });            
+        return new Promise(function(resolve, reject){
+            
+            var scannerCompareCompleted = 0;
+            var scannerCompareTotal = beforeAllData.length;
+
+            console.log(beforeAllData);
+
+            beforeData = {};
+            afterData = {};
+        
+            var diffs = [];
+        
+            beforeAllData.forEach(function(before){
+
+                before = before[0];
+
+                var currentScanner = null;
+                beforeData = before.data;
+                afterData = null;
+        
+             
+
+                scanners.forEach(function(scanner) {
+                    console.log(before.scanner + "==" + scanner.ScannerId)
+                    if(before.scanner == scanner.ScannerId){
+                        currentScanner = scanner;
+                        console.log("Scaner " + currentScanner.ScannerName + " found !");                
+                        return;
+                    }    
+                });
+        
+                afterAllData.forEach(function(after){
+
+                    after = after[0];
+
+                    if(after.scanner == before.scanner){
+                        //same scanner
+                        afterData = after.data;
+                        console.log(afterData)
+                        return;
+                    }
+                });
+        
+        
+                if(currentScanner != null && afterData != null){
+                    var diff = currentScanner.diff(beforeData, afterData);
+                    diffs.push({ scanner : currentScanner.ScannerName, results : diff });
+                }
+
+                scannerCompareCompleted++;
+               
+        
+            });
+
+            resolve(diffs);
+        }).then(function(compareResults){
+            return compareCompleted(compareResults);
         });
 
+
         
+    },   
+}
 
-    },
 
-    loadAfterCompareFile : function(){
 
-        $("#scanResultsAfter").fadeOut('fast', function(){
-            $("#scanResultsAfter").html("Loading file...").show();
-            getBeforeFileContent(function(data){
-                data = jsonPrettyPrint.toHtml(JSON.parse(data), function(niceData){
-                    $("#scanResultsAfter").html("<pre>" + niceData + "</pre>").fadeIn('slow');                      
-                });    
-            });            
+
+compareCompleted = function(results){
+
+    return new Promise(function(resolve, reject){
+        console.log("Compare completed!")
+        console.log(results);
+    
+        var dir = os.homedir() + "\\WinDiffer\\Results\\";
+    
+        mkdirp(dir, function(){
+            var dateTime = moment().format("YYYYMMDD_HHmmss");
+            var filename = dir+dateTime+".json";
+            fs.writeFile(filename, JSON.stringify(results), function(err){ });
+            uiWriter.writeToScanLog("Saved result in file : " + filename);
         });
 
-        
-    },
-
-
-    startCompare : function(){
-        compare();
-    }
-   
-}
-
-
-var getBeforeFileContent = function(_callback){
-    var file = os.homedir() + "\\WindowsDiff\\Results\\" + $('#cboBefore').val();
-    
-    var content = '';
-
-    fs.readFile(file, 'utf8', function(err, data){;
-        _callback(data);
-    });    
-}
-
-var getAfterFileContent = function(_callback){
-    var file = os.homedir() + "\\WindowsDiff\\Results\\" + $('#cboAfter').val();
-    
-    var content = '';
-
-    fs.readFile(file, 'utf8', function(err, data){
-        _callback(data);
-    });    
-}
-
-
-
-var compare = function(){
-
-    var beforeContent;
-    var afterContent;
-
-    var filesremaining = 2;
-
-    var diffResults;
-
-    getAfterFileContent(function(data){
-        afterContent = data;
-        filesremaining--;
-
-        if(filesremaining == 0){
-            diffResults = compareFileData(beforeContent, afterContent);
-        }
-    }); 
-
-    getBeforeFileContent(function(data){
-        beforeContent = data;
-        filesremaining--;
-
-        if(filesremaining == 0){
-            diffResults = compareFileData(beforeContent, afterContent);
-        }
-
-
-        console.log(diffResults);
-    }); 
-
+        resolve();
+    })
 
 
 }
+
 
 
 var compareFileData = function(beforeContent, afterContent){
@@ -151,7 +140,7 @@ var compareFileData = function(beforeContent, afterContent){
         }
        
 
-    })
+    });
 
     return diffs;
 
@@ -160,29 +149,8 @@ var compareFileData = function(beforeContent, afterContent){
 
 
 
-var jsonPrettyPrint = {
-    replacer: function(match, pIndent, pKey, pVal, pEnd) {
-       var key = '<span class=json-key>';
-       var val = '<span class=json-value>';
-       var str = '<span class=json-string>';
-       var r = pIndent || '';
-       if (pKey)
-          r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';
-       if (pVal)
-          r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>';
-       return r + (pEnd || '');
-       },
-    toHtml: function(obj, _callback) {
-       var jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
-       var data = JSON.stringify(obj, null, 3)
-          .replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
-          .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-          .replace(jsonLine, jsonPrettyPrint.replacer);
 
-          _callback(data);
-       }
-    };
- 
+
 
 
 

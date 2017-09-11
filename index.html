@@ -13,9 +13,9 @@
 
     <div class="container-fluid">
         <nav class="nav nav-tabs" id="myTab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-scan-tab" data-toggle="tab" href="#nav-scan" role="tab" aria-controls="nav-scan" aria-expanded="true">Scan</a>
-            <a class="nav-item nav-link" id="nav-compare-tab" data-toggle="tab" href="#nav-compare" role="tab" aria-controls="nav-compare">Compare</a>
-            <a class="nav-item nav-link" id="nav-results-tab" data-toggle="tab" href="#nav-results" role="tab" aria-controls="nav-results" aria-expanded="true">Results</a>            
+            <a class="nav-item nav-link active" id="nav-scan-tab" href="#nav-scan" role="tab" aria-controls="nav-scan" aria-expanded="true">Scan</a>
+            <a class="nav-item nav-link" id="nav-compare-tab" href="#nav-compare" role="tab" aria-controls="nav-compare">Compare</a>
+            <a class="nav-item nav-link" id="nav-results-tab" href="#nav-results" role="tab" aria-controls="nav-results" aria-expanded="true">Results</a>            
         </nav>
         <div class="tab-content fullheight" id="nav-tabContent">
 
@@ -35,26 +35,24 @@
                         </div>          
                     </div>
                 </div>   
-                <div style="flex: 0 1 auto; position: fixed; bottom: 0; width:100%">
+                <div style="flex: 0 1 auto; bottom: 0; width:100%">
                     <div class="large-container center-content">
-                           <button class="btn btn-secondary" id="btnStartScan">Start Scan</button>                    
+                           <button class="btn btn-secondary" id="btnStartScan">Start Scan</button>
+                           <div class="loading loading-scan center-content" style="display:none">
+                                <img src="Ressources/loading_fountain.gif" />
+                            </div> 
                     </div>         
         
                     <div class="large-container center-content card scan-logs-container">
                             <div class="card-body scan-logs"></div>              
                     </div>        
         
-                    <div class="large-container">
-                        <div class="progress ">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated scan-progressbar" role="progressbar" style="width: 0%;height: 30px" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
             <!--COMPARE TAB-->
             <div class="tab-pane fade fullheight" id="nav-compare" role="tabpanel" aria-labelledby="nav-compare-tab">
-                <div style="flex: 0 1 auto">
+                <div>
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
@@ -70,34 +68,45 @@
                         </div>  
                     </div>
                 </div>   
-                <div style="flex: 0 1 auto" class="fullheight">
-                    <div class="row fullheight">
-                        <div class="col-6 fullheight">
-                            <div class="card fullheight">
+                <div class="compare-tab-container">
+                    <div class="row height100">
+                        <div class="col-6 height100">
+                            <div class="card height100">
                                 <div class="card-body scan-result" id="scanResultsBefore"></div>              
                             </div>                             
                         </div>    
-                        <div class="col-6">
-                            <div class="card fullheight">
+                        <div class="col-6 height100">
+                            <div class="card height100">
                                 <div class="card-body scan-result" id="scanResultsAfter"></div>              
                             </div>  
                         </div>  
-                    </div>
+                    </div>                
+                    
+                    <div class="large-container center-content">
+                        <button class="btn btn-secondary" id="btnStartCompare">Start Compare</button>
+                        <div class="loading loading-compare center-content" style="display:none">
+                            <img src="Ressources/loading_fountain.gif" />
+                        </div>                     
+                    </div>       
                 </div>
 
-                <div class="large-container center-content">
-                    <button class="btn btn-secondary" id="btnStartCompare">Start Compare</button>                    
-                </div>          
-     
-                <div class="large-container">
-                    <div class="progress ">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated compare-progressbar" role="progressbar" style="width: 0%;height: 30px" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
+
             </div>
 
             <!--RESULTS TAB-->
-            <div class="tab-pane fade" id="nav-results" role="tabpanel" aria-labelledby="nav-results-tab">c</div>
+            <div class="tab-pane fade fullheight" id="nav-results" role="tabpanel" aria-labelledby="nav-results-tab">
+                <div class="row fullheight">
+                    <div class="col">
+                        <div class="form-group ">
+                            <label for="cboCompare">Compare Results</label>
+                            <select class="form-control fullheight" style="line-height: fullheight" id="cboCompare"></select>
+                        </div>
+                        <div class="card fullheight">
+                            <div class="card-body scan-result" id="compareResults"></div>              
+                        </div> 
+                    </div>
+                </div>
+            </div>
     </div>
 
 </div>
@@ -110,6 +119,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script>   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src=".\node_modules\handlebars\dist\handlebars.min.js"></script>
     <script>        
         const app = require('./App')
         app.init();

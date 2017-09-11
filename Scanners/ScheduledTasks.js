@@ -4,9 +4,7 @@ const diffResults = require('../DiffResults');
 
 var item = function(obj) {
     var item = {
-        id : obj.PSChildName,
-        displayName : obj.DisplayName,
-        displayVersion :  obj.DisplayVersion
+        id : obj.TaskPath + obj.TaskName
     };
 
     return item;
@@ -14,8 +12,8 @@ var item = function(obj) {
 
 module.exports = {
     
-    moduleId : "installedprograms32",
-    moduleName : "Installed programs - 32 bits",
+    ScannerId : "scheduledtasks",
+    ScannerName : "Scheduled Tasks",
 
     buildItem : function(obj){
         return item(obj);
@@ -24,11 +22,10 @@ module.exports = {
     scan : function(){
         let ps = new shell({
             executionPolicy: 'Bypass',
-            noProfile: true,
-            outputEncoding: 'utf8'
+            noProfile: true
           });
         
-          ps.addCommand("Get-ChildItem -Path HKLM:\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | ForEach-Object { Get-ItemProperty $_.pspath } | Select-Object PSChildName, DisplayName, DisplayVersion | ConvertTo-Json -Compress");
+          ps.addCommand("Get-ScheduledTask | Get-ScheduledTaskInfo | Select TaskName, TaskPath | ConvertTo-Json -Compress");
           return ps.invoke();
     },
 
@@ -41,21 +38,14 @@ module.exports = {
             var afterItem = Enumerable.from(afterList).firstOrDefault(function(x) { return x.id == beforeItem.id });
 
             if(afterItem == null){
-                //Service doesn't exists anymore
                 results.push(diffResults.deleted(beforeItem));
-                return;
-            }
-
-            if(beforeItem.displayName != afterItem.displayName || beforeItem.displayVersion != afterItem.displayVersion){
-                //Service modified
-                results.push(diffResults.modified(beforeItem, afterItem));
                 return;
             }
 
         }, this);
 
         afterList.forEach(function(afterItem) {
-            var beforeItem = Enumerable.from(beforeList).firstOrDefault(function(x) { return x.Name == afterItem.Name });
+            var beforeItem = Enumerable.from(beforeList).firstOrDefault(function(x) { return x.id == afterItem.id });
 
             if(beforeItem == null){
                 results.push(diffResults.added(afterItem));

@@ -1,0 +1,9 @@
+
+{{#each this}}
+<div class="form-check">
+    <label class="form-check-label">
+        <input type="checkbox" class="chk-module" id="{{ScannerId}}">
+        {{ScannerName}}
+    </label>
+</div>
+{{/each}}

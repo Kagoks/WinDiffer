@@ -8,7 +8,14 @@ module.exports = {
             logs.append(data);
 
         logs.scrollTop(logs[0].scrollHeight);
-    }
+    },
+    
+    resetScanLogs : function(){
+        $(".scan-logs").text("");
+    },
+
+
+
 
 
 }

@@ -70,8 +70,8 @@ html, body, .container-fluid{
     height:100%;
 }
 
-.card .scan-result{
-    height: 100%;
+.scan-result{
+    height: calc(100% - 70px);
     overflow: auto;
 }
 
@@ -80,8 +80,22 @@ html, body, .container-fluid{
 .json-string { color: olive; }
 
 
-.fullheight{
-    height: 92%;
+
+.scan-tab-container{
+
+}
+
+.compare-tab-container{
+    height: calc(100% - 154px);
 }
 
 
+
+.fullheight{
+    height: calc(100% - 42px);
+}
+
+
+.height100{
+    height: 100%;
+}

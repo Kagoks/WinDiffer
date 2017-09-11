@@ -16,8 +16,8 @@ var item = function(obj) {
 
 module.exports = {
     
-    moduleId : "services",
-    moduleName : "Services",
+    ScannerId : "services",
+    ScannerName : "Services",
 
     buildItem : function(obj){
         return item(obj);

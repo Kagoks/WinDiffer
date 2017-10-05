@@ -8,14 +8,17 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" >
     <link rel="stylesheet" href="main.css" >
+    <script>
+        const trans = require('./trans');
+    </script>
   </head>
   <body>
 
     <div class="container-fluid">
         <nav class="nav nav-tabs" id="myTab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-scan-tab" href="#nav-scan" role="tab" aria-controls="nav-scan" aria-expanded="true">Scan</a>
-            <a class="nav-item nav-link" id="nav-compare-tab" href="#nav-compare" role="tab" aria-controls="nav-compare">Compare</a>
-            <a class="nav-item nav-link" id="nav-results-tab" href="#nav-results" role="tab" aria-controls="nav-results" aria-expanded="true">Results</a>            
+            <a class="nav-item nav-link active" id="nav-scan-tab" href="#nav-scan" role="tab" aria-controls="nav-scan" aria-expanded="true"><script>document.write(trans('tab.scan'))</script></a>
+            <a class="nav-item nav-link" id="nav-compare-tab" href="#nav-compare" role="tab" aria-controls="nav-compare"><script>document.write(trans('tab.compare'))</script></a>
+            <a class="nav-item nav-link" id="nav-results-tab" href="#nav-results" role="tab" aria-controls="nav-results" aria-expanded="true"><script>document.write(trans('tab.results'))</script></a>            
         </nav>
         <div class="tab-content fullheight" id="nav-tabContent">
 
@@ -25,7 +28,7 @@
                     <div class="form-check check-all">
                         <label class="form-check-label">
                             <input type="checkbox" id="check-all-modules">
-                            Toggle all
+                            <script>document.write(trans('scan.toggleall'))</script>
                         </label>
                     </div>
                     <div class="row modules-container">
@@ -37,7 +40,7 @@
                 </div>   
                 <div style="flex: 0 1 auto; bottom: 0; width:100%">
                     <div class="large-container center-content">
-                           <button class="btn btn-secondary" id="btnStartScan">Start Scan</button>
+                           <button class="btn btn-secondary" id="btnStartScan"><script>document.write(trans('scan.startscan'))</script></button>
                            <div class="loading loading-scan center-content" style="display:none">
                                 <img src="Ressources/loading_fountain.gif" />
                             </div> 
@@ -56,13 +59,13 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="cboBefore">Before scan</label>
+                                <label for="cboBefore"><script>document.write(trans('compare.beforescan'))</script></label>
                                 <select class="form-control" id="cboBefore"></select>
                             </div>                            
                         </div>    
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="cboAfter">After scan</label>
+                                <label for="cboAfter"><script>document.write(trans('compare.afterscan'))</script></label>
                                 <select class="form-control" id="cboAfter"></select>
                             </div>  
                         </div>  
@@ -83,7 +86,7 @@
                     </div>                
                     
                     <div class="large-container center-content">
-                        <button class="btn btn-secondary" id="btnStartCompare">Start Compare</button>
+                        <button class="btn btn-secondary" id="btnStartCompare"><script>document.write(trans('compare.startcompare'))</script></button>
                         <div class="loading loading-compare center-content" style="display:none">
                             <img src="Ressources/loading_fountain.gif" />
                         </div>                     
@@ -98,7 +101,7 @@
                 <div class="row fullheight">
                     <div class="col">
                         <div class="form-group ">
-                            <label for="cboCompare">Compare Results</label>
+                            <label for="cboCompare"><script>document.write(trans('results.compareresults'))</script></label>
                             <select class="form-control fullheight" style="line-height: fullheight" id="cboCompare"></select>
                         </div>
                         <div class="card fullheight">
@@ -121,8 +124,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
     <script src=".\node_modules\handlebars\dist\handlebars.min.js"></script>
     <script>        
-        const app = require('./App')
+        const app = require('./App');
         app.init();
+
+        
     </script>
   </body>
 </html>

@@ -1,4 +1,5 @@
 const StringBuilder = require('stringbuilder');
+const trans = require('./trans');
 
 module.exports = {
 
@@ -9,24 +10,27 @@ module.exports = {
             var data = JSON.parse(content);
 
             var sb = new StringBuilder({ newLine:'\r\n' });
-            
+
+            sb.appendLine("[WinDiffer v.0.0.2]");
+            sb.appendLine();
+
             data.forEach(function(diff){
                 sb.appendLine("[" + diff.scanner + "]");
                 
                 if(diff.results.length == 0){
-                    sb.appendLine("-- No change --");
+                    sb.appendLine("-- " + trans('results.nochange') + "--");
                 }
                 else {
                     diff.results.forEach(function(result){
                         if(result.diffType == "Added"){
-                            sb.appendLine("Added : " + JSON.stringify(result.newItem).replace(/\\\\/g, '\\'));
+                            sb.appendLine(trans('results.added')  + " : " + JSON.stringify(result.newItem).replace(/\\\\/g, '\\')) ;
                         }
                         else if(result.diffType == "Deleted"){
-                            sb.appendLine("Deleted : " + JSON.stringify(result.oldItem).replace(/\\\\/g, '\\'));
+                            sb.appendLine(trans('results.deleted') + " : " + JSON.stringify(result.oldItem).replace(/\\\\/g, '\\'));
                         }
                         else if(result.diffType == "Modified"){
-                            sb.appendLine("Modified (before) : " + JSON.stringify(result.oldItem).replace(/\\\\/g, '\\',));
-                            sb.appendLine("Modified (after)  : " + JSON.stringify(result.newItem).replace(/\\\\/g, '\\'));
+                            sb.appendLine(trans('results.modifiedbefore') + " : " + JSON.stringify(result.oldItem).replace(/\\\\/g, '\\',));
+                            sb.appendLine(trans('results.modifiedafter') + " : " + JSON.stringify(result.newItem).replace(/\\\\/g, '\\'));
                         }
                     });
                 }

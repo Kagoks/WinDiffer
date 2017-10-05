@@ -26,9 +26,24 @@ $('a#nav-results-tab').click(function(){
 
 var loadScanTab = function(){
 
-    $.get('./templates/scanners.hds', function(template){       
+    $scannersFirstCol = []
+    $scannersSecondCol = []
+
+    for($x=0; $x<controller.scanners.length; $x++){
+        if($x % 2 == 0){
+            $scannersFirstCol.push(controller.scanners[$x]);
+        }
+        else{
+            $scannersSecondCol.push(controller.scanners[$x]);
+        }
+
+    }
+    
+
+    $.get('./templates/scanners.hds', function(template){
         var template = Handlebars.compile(template);        
-        $('.checkboxes.first').html(template(controller.scanners));
+        $('.checkboxes.first').html(template($scannersFirstCol));
+        $('.checkboxes.second').html(template($scannersSecondCol));
     });
 
     $('a#nav-scan-tab').tab('show');
@@ -40,7 +55,7 @@ $("#btnStartScan").click(function(){
 
     controller.scanRunning = true;
 
-    $(this).prop('disabled', true).text('Scan running, please wait...');  
+    $(this).prop('disabled', true).text(trans('scan.scanrunning'));  
     $(".loading.loading-scan").show();
 
     
@@ -52,7 +67,7 @@ $("#btnStartScan").click(function(){
         });
 
         setTimeout(function(){
-            $("#btnStartScan").prop('disabled', false).text('Start Scan');
+            $("#btnStartScan").prop('disabled', false).text(trans("scan.startscan"));
             controller.scanRunning = false;
             $(".loading.loading-scan").hide();
         }, 1500);
@@ -81,11 +96,11 @@ loadAfterSnapshotFile();
     controller.compareRunning = true;
     $(".loading.loading-compare").show();
 
-    $(this).prop('disabled', true).text('Compare running, please wait...');
+    $(this).prop('disabled', true).text(trans('compare.comparerunning'));
     controller.startCompare().then(function(){
 
         setTimeout(function(){
-            $("#btnStartCompare").prop('disabled', false).text('Start compare');
+            $("#btnStartCompare").prop('disabled', false).text(trans('compare.startcompare'));
             controller.compareRunning = false;
             $(".loading.loading-compare").hide();
             loadResultsTab();

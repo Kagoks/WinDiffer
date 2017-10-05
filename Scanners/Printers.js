@@ -4,10 +4,10 @@ const diffResults = require('../DiffResults');
 const trans = require('../trans');
 const fileManager = require('../FilesManager');
 
+
 var item = function(obj) {
     var item = {
-        id : obj.PSChildName,
-        name : obj.FriendlyName
+        name : obj.Name
     };
 
     return item;
@@ -15,8 +15,8 @@ var item = function(obj) {
 
 module.exports = {
     
-    ScannerId : "machineexceladdin",
-    ScannerName : trans('scanners.machineexceladdin'),
+    ScannerId : "printers",
+    ScannerName : trans('scanners.printers'),
 
     buildItem : function(obj){
         return item(obj);
@@ -28,7 +28,7 @@ module.exports = {
             noProfile: true
           });
         
-          ps.addCommand("Get-ChildItem -Path HKLM:\\Software\\Microsoft\\Office\\Excel\\Addins,HKLM:\\Software\\WOW6432Node\\Microsoft\\Office\\Excel\\Addins -ErrorAction SilentlyContinue | ForEach-Object { Get-ItemProperty $_.pspath } | Select-Object PSChildName, FriendlyName | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
+          ps.addCommand("Get-WmiObject Win32_Printer | Select Name | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
           return ps.invoke();
     },
 
@@ -38,7 +38,7 @@ module.exports = {
         var results = [];
 
         beforeList.forEach(function(beforeItem) {
-            var afterItem = Enumerable.from(afterList).firstOrDefault(function(x) { return x.id == beforeItem.id });
+            var afterItem = Enumerable.from(afterList).firstOrDefault(function(x) { return x.name == beforeItem.name });
 
             if(afterItem == null){
                 //Service doesn't exists anymore
@@ -46,16 +46,11 @@ module.exports = {
                 return;
             }
 
-            if(beforeItem.name != afterItem.name || beforeItem.name != afterItem.name){
-                //Service modified
-                results.push(diffResults.modified(beforeItem, afterItem));
-                return;
-            }
 
         }, this);
 
         afterList.forEach(function(afterItem) {
-            var beforeItem = Enumerable.from(beforeList).firstOrDefault(function(x) { return x.id == afterItem.id });
+            var beforeItem = Enumerable.from(beforeList).firstOrDefault(function(x) { return x.name == afterItem.name });
 
             if(beforeItem == null){
                 results.push(diffResults.added(afterItem));

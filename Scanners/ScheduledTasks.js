@@ -1,6 +1,8 @@
 const shell = require('node-powershell')
 const Enumerable = require('linq');
 const diffResults = require('../DiffResults');
+const trans = require('../trans');
+const fileManager = require('../FilesManager');
 
 var item = function(obj) {
     var item = {
@@ -13,7 +15,7 @@ var item = function(obj) {
 module.exports = {
     
     ScannerId : "scheduledtasks",
-    ScannerName : "Scheduled Tasks",
+    ScannerName : trans('scanners.scheduledtasks'),
 
     buildItem : function(obj){
         return item(obj);
@@ -25,7 +27,7 @@ module.exports = {
             noProfile: true
           });
         
-          ps.addCommand("Get-ScheduledTask | Get-ScheduledTaskInfo | Select TaskName, TaskPath | ConvertTo-Json -Compress");
+          ps.addCommand("Get-ScheduledTask | Get-ScheduledTaskInfo | Select TaskName, TaskPath | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
           return ps.invoke();
     },
 

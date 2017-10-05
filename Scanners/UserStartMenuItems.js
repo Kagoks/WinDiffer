@@ -2,6 +2,8 @@ const shell = require('node-powershell')
 const Enumerable = require('linq');
 const diffResults = require('../DiffResults');
 const moment = require('moment');
+const trans = require('../trans');
+const fileManager = require('../FilesManager');
 
 var item = function(obj) {
     var item = {
@@ -15,7 +17,7 @@ var item = function(obj) {
 module.exports = {
     
     ScannerId : "userstartmenu",
-    ScannerName : "User Start Menu",
+    ScannerName : trans('scanners.userstartmenu'),
 
     buildItem : function(obj){
         return item(obj);
@@ -27,7 +29,7 @@ module.exports = {
             noProfile: true
           });
         
-          ps.addCommand("Get-ChildItem -Path ([Environment]::GetFolderPath('StartMenu')) -Recurse | Select-Object FullName, LastWriteTime | ConvertTo-Json -Compress");
+          ps.addCommand("Get-ChildItem -Path ([Environment]::GetFolderPath('StartMenu')) -Recurse | Select-Object FullName, LastWriteTime | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
           return ps.invoke();
     },
 
@@ -54,7 +56,7 @@ module.exports = {
         }, this);
 
         afterList.forEach(function(afterItem) {
-            var beforeItem = Enumerable.from(beforeList).firstOrDefault(function(x) { return x.Name == afterItem.Name });
+            var beforeItem = Enumerable.from(beforeList).firstOrDefault(function(x) { return x.filename == afterItem.filename });
 
             if(beforeItem == null){
                 results.push(diffResults.added(afterItem));

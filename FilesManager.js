@@ -4,10 +4,15 @@ const fs = require('fs');
 
 var snapshotsFilesDir = os.homedir() + "\\WinDiffer\\Snapshots";
 var resultsFilesDir = os.homedir() + "\\WinDiffer\\Results";
+var lastScanFile = os.homedir() + "\\WinDiffer\\scan.json"
 
 
 
 module.exports = {
+
+    getLastScanFileName : function(){
+        return os.homedir() + "\\WinDiffer\\scan.json"
+    }, 
     
 
     getSnapshotsFiles : function(){
@@ -62,6 +67,18 @@ module.exports = {
             fs.readFile(resultsFilesDir + "\\" + file, 'utf8', function(err, content){
                 resolve(content);
             });  
+        });
+    },
+
+
+    getLastScanFileContent : function(){
+        return new Promise(function(resolve, reject){
+            
+            var fileContent = "";
+            fs.readFile(os.homedir() + "\\WinDiffer\\scan.json", 'utf8', function(err, content){
+                resolve(content);               
+            });  
+          
         });
     },
 

@@ -1,6 +1,8 @@
 const shell = require('node-powershell');
 const Enumerable = require('linq');
 const diffResults = require('../DiffResults');
+const trans = require('../trans');
+const fileManager = require('../FilesManager');
 
 
 var item = function(obj) {
@@ -17,20 +19,21 @@ var item = function(obj) {
 module.exports = {
     
     ScannerId : "services",
-    ScannerName : "Services",
+    ScannerName : trans('scanners.services'),
 
     buildItem : function(obj){
         return item(obj);
     },
 
     scan : function(){
+        
         let ps = new shell({
             executionPolicy: 'Bypass',
-            noProfile: true,
-            outputEncoding: 'utf8'
+            noProfile: true
           });
 
-          ps.addCommand("Get-Service | Select -property Name,DisplayName,StartType,Status | ConvertTo-Json -Compress");
+          
+          ps.addCommand("Get-Service | Select -property Name,DisplayName,StartType,Status | ConvertTo-Json -Compress | Out-File \"" + fileManager.getLastScanFileName() + "\" -Encoding utf8 -Force");
           return ps.invoke();
     },
 

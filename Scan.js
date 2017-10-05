@@ -3,20 +3,38 @@ const mkdirp = require('mkdirp');
 const moment = require('moment');
 const uiWriter = require('./UIWriter');
 const os = require('os');
+const iconv = require('iconv-lite');
+const fileManager = require('./FilesManager');
+const trans = require('./trans');
 
 
 var totalScansAmount = 0;
 var completedScansAmount = 0;
+var resultsComplete = [];
 
 module.exports = {
     launchScan : function(scanners){
 
+        resultsComplete = [];
         totalScansAmount = scanners.length;
         completedScansAmount = 0;
         uiWriter.resetScanLogs();
 
         console.log(scanners);
+        
+        var lastPromise = null;
 
+        scanners.forEach(function(scanner){
+            if(lastPromise==null){
+                lastPromise = getScannerPromise(scanner);
+            }
+            else{
+                lastPromise = lastPromise.then(function(){
+                    return getScannerPromise(scanner)
+                });
+            }            
+        });
+/*
         var scansPromises = [];
         scanners.forEach(function(scanner){
             scansPromises.push(getScannerPromise(scanner));
@@ -24,7 +42,15 @@ module.exports = {
 
         return Promise.all(scansPromises).then(function(results){ 
             return scansCompleted(results);
-        });       
+        });      
+
+        */
+
+
+        return lastPromise.then(function(){
+            return scansCompleted(resultsComplete);
+        });
+        
     }
 }
 
@@ -33,33 +59,38 @@ var getScannerPromise = function(scanner){
     return new Promise(function(resolve, reject){
         var results = [];
 
-        scanner.scan().then(function(scanData){
-            if(scanData){                        
-                var data = [];
+        uiWriter.writeToScanLog(trans('scan.startscanfor') +  " : " + scanner.ScannerName);
 
-                scanData = JSON.parse(scanData);
-                if(!(scanData instanceof Array)){
-                    scanData = [scanData]; //Convert single object to array
+        scanner.scan().then(function(){
+
+            fileManager.getLastScanFileContent().then(function(scanData){
+                if(scanData){       
+                    var data = [];
+
+                    scanData = JSON.parse(scanData.trim());
+                    if(!(scanData instanceof Array)){
+                        scanData = [scanData]; //Convert single object to array
+                    }
+
+                    scanData.forEach(function(x){
+                        data.push(scanner.buildItem(x));
+                    })
+                    uiWriter.writeToScanLog((trans('scan.scancompletedfor') + " : " + scanner.ScannerName + ". " + trans('scan.found') + " " + data.length + " " + trans('scan.items') + "."));
+                    console.log(data);
+                    results.push({'scanner' : scanner.ScannerId, data});
+                }
+                else{
+                    data = [];
+                    console.log("No data for " + scanner.ScannerName + "scan");
+                    results.push({'scanner' : scanner.ScannerId, data});
+                    uiWriter.writeToScanLog((trans('scan.scancompletedfor') + " : " + scanner.ScannerName + "." + trans('scan.noitemsfound') + "."));
                 }
 
-                scanData.forEach(function(x){
-                    data.push(scanner.buildItem(x));
-                })
-                uiWriter.writeToScanLog("Scan completed for : " + scanner.ScannerName + ". Found " + data.length + " items");
-                console.log(data);
-                results.push({'scanner' : scanner.ScannerId, data});
-            }
-            else{
-                data = [];
-                console.log("No data for " + scanner.ScannerName + "scan");
-                results.push({'scanner' : scanner.ScannerId, data});
-                uiWriter.writeToScanLog("Scan completed for : " + scanner.ScannerName + ". No items found.");
-            }
-
-            completedScansAmount++;
-            percent = (completedScansAmount)/(totalScansAmount).toPrecision(2) * 100; 
-            resolve(results);
-
+                completedScansAmount++;
+                percent = (completedScansAmount)/(totalScansAmount).toPrecision(2) * 100; 
+                resultsComplete.push(results);
+                resolve(results);
+            });
 
         }).catch(err => console.log(err))
     });
@@ -73,7 +104,7 @@ var scansCompleted = function(results){
         console.log("Scan completed!")
         console.log(results);
     
-        uiWriter.writeToScanLog("Scan completed.")
+        uiWriter.writeToScanLog(trans('scan.scancompleted') + ".")
     
         var dir = os.homedir() + "\\WinDiffer\\Snapshots\\";
     
@@ -81,7 +112,7 @@ var scansCompleted = function(results){
             var dateTime = moment().format("YYYYMMDD_HHmmss");
             var filename = dir+dateTime+".json";
             fs.writeFile(filename, JSON.stringify(results), function(err){ });
-            uiWriter.writeToScanLog("Saved result in file : " + filename);
+            uiWriter.writeToScanLog(trans('scan.savedfile') + " : " + filename);
             
             resolve();
         });

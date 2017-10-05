@@ -1,6 +1,8 @@
 const shell = require('node-powershell')
 const Enumerable = require('linq');
 const diffResults = require('../DiffResults');
+const trans = require('../trans');
+const fileManager = require('../FilesManager');
 
 var item = function(obj) {
     var item = {
@@ -14,7 +16,7 @@ var item = function(obj) {
 module.exports = {
     
     ScannerId : "machinewordaddin",
-    ScannerName : "Microsoft Word Addins - Machine",
+    ScannerName : trans('scanners.machinewordaddin'),
 
     buildItem : function(obj){
         return item(obj);
@@ -26,7 +28,7 @@ module.exports = {
             noProfile: true
           });
         
-          ps.addCommand("Get-ChildItem -Path HKLM:\\Software\\Microsoft\\Office\\Word\\Addins,HKLM:\\Software\\WOW6432Node\\Microsoft\\Office\\Word\\Addins -ErrorAction SilentlyContinue | ForEach-Object { Get-ItemProperty $_.pspath } | Select-Object PSChildName, FriendlyName | ConvertTo-Json -Compress");
+          ps.addCommand("Get-ChildItem -Path HKLM:\\Software\\Microsoft\\Office\\Word\\Addins,HKLM:\\Software\\WOW6432Node\\Microsoft\\Office\\Word\\Addins -ErrorAction SilentlyContinue | ForEach-Object { Get-ItemProperty $_.pspath } | Select-Object PSChildName, FriendlyName | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
           return ps.invoke();
     },
 

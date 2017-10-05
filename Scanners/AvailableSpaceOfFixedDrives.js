@@ -6,9 +6,8 @@ const fileManager = require('../FilesManager');
 
 var item = function(obj) {
     var item = {
-        id : obj.PSChildName,
-        displayName : obj.DisplayName,
-        displayVersion :  obj.DisplayVersion
+        name : obj.Name,
+        availableFreeSpace : (obj.AvailableFreeSpace / 1024 / 1024).toFixed(2) + " Mb" 
     };
 
     return item;
@@ -16,8 +15,8 @@ var item = function(obj) {
 
 module.exports = {
     
-    ScannerId : "installedprograms32",
-    ScannerName : trans('scanners.installedprograms32'),
+    ScannerId : "availablespacefixeddrives",
+    ScannerName : trans('scanners.availablespacefixeddrives'),
 
     buildItem : function(obj){
         return item(obj);
@@ -26,11 +25,10 @@ module.exports = {
     scan : function(){
         let ps = new shell({
             executionPolicy: 'Bypass',
-            noProfile: true,
-            outputEncoding: 'utf8'
+            noProfile: true
           });
         
-          ps.addCommand("Get-ChildItem -Path HKLM:\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | ForEach-Object { Get-ItemProperty $_.pspath } | Select-Object PSChildName, DisplayName, DisplayVersion | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
+          ps.addCommand("[System.IO.DriveInfo]::getdrives() | Where-Object DriveType -eq 'Fixed' | Select Name,AvailableFreeSpace | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
           return ps.invoke();
     },
 
@@ -40,16 +38,16 @@ module.exports = {
         var results = [];
 
         beforeList.forEach(function(beforeItem) {
-            var afterItem = Enumerable.from(afterList).firstOrDefault(function(x) { return x.id == beforeItem.id });
+            var afterItem = Enumerable.from(afterList).firstOrDefault(function(x) { return x.name == beforeItem.name });
 
             if(afterItem == null){
-                //Service doesn't exists anymore
+                //Default folder doesn't exists anymore
                 results.push(diffResults.deleted(beforeItem));
                 return;
             }
 
-            if(beforeItem.displayName != afterItem.displayName || beforeItem.displayVersion != afterItem.displayVersion){
-                //Service modified
+            if(beforeItem.availableFreeSpace != afterItem.availableFreeSpace){
+                //Default folder modified
                 results.push(diffResults.modified(beforeItem, afterItem));
                 return;
             }
@@ -57,7 +55,7 @@ module.exports = {
         }, this);
 
         afterList.forEach(function(afterItem) {
-            var beforeItem = Enumerable.from(beforeList).firstOrDefault(function(x) { return x.id == afterItem.id });
+            var beforeItem = Enumerable.from(beforeList).firstOrDefault(function(x) { return x.name == afterItem.name });
 
             if(beforeItem == null){
                 results.push(diffResults.added(afterItem));

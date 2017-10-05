@@ -1,6 +1,8 @@
 const shell = require('node-powershell')
 const Enumerable = require('linq');
 const diffResults = require('../DiffResults');
+const trans = require('../trans');
+const fileManager = require('../FilesManager');
 
 var item = function(obj) {
     var item = {
@@ -15,7 +17,7 @@ var item = function(obj) {
 module.exports = {
     
     ScannerId : "installedprograms64",
-    ScannerName : "Installed programs - 64 bits",
+    ScannerName : trans('scanners.installedprograms64'),
 
     buildItem : function(obj){
         return item(obj);
@@ -27,7 +29,7 @@ module.exports = {
             noProfile: true
           });
         
-          ps.addCommand("Get-ChildItem -Path HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | ForEach-Object { Get-ItemProperty $_.pspath } | Select-Object PSChildName, DisplayName, DisplayVersion | ConvertTo-Json -Compress");
+          ps.addCommand("Get-ChildItem -Path HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | ForEach-Object { Get-ItemProperty $_.pspath } | Select-Object PSChildName, DisplayName, DisplayVersion | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
           return ps.invoke();
     },
 

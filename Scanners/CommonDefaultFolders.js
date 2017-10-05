@@ -1,11 +1,13 @@
 const shell = require('node-powershell')
 const Enumerable = require('linq');
 const diffResults = require('../DiffResults');
+const trans = require('../trans');
+const fileManager = require('../FilesManager');
 
 var item = function(obj) {
     var item = {
-        id : obj.PSChildName,
-        name : obj.FriendlyName
+        id : obj.Name,
+        value : obj.Value
     };
 
     return item;
@@ -13,8 +15,8 @@ var item = function(obj) {
 
 module.exports = {
     
-    ScannerId : "defaultfolders",
-    ScannerName : "Default Folders",
+    ScannerId : "commondefaultfolders",
+    ScannerName : trans('scanners.commondefaultfolders'),
 
     buildItem : function(obj){
         return item(obj);
@@ -26,7 +28,7 @@ module.exports = {
             noProfile: true
           });
         
-          ps.addCommand("Get-ChildItem -Path HKLM:\\Software\\Microsoft\\Office\\Excel\\Addins,HKLM:\\Software\\WOW6432Node\\Microsoft\\Office\\Excel\\Addins -ErrorAction SilentlyContinue | ForEach-Object { Get-ItemProperty $_.pspath } | Select-Object PSChildName, FriendlyName | ConvertTo-Json -Compress");
+          ps.addCommand("Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders' | Select * -ExcludeProperty PSPath,PSParentPath,PSChildName,PSDrive,PSProvider | foreach { $_.PSObject.Properties  } | Select Name,Value | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
           return ps.invoke();
     },
 
@@ -39,13 +41,13 @@ module.exports = {
             var afterItem = Enumerable.from(afterList).firstOrDefault(function(x) { return x.id == beforeItem.id });
 
             if(afterItem == null){
-                //Service doesn't exists anymore
+                //Default folder doesn't exists anymore
                 results.push(diffResults.deleted(beforeItem));
                 return;
             }
 
-            if(beforeItem.name != afterItem.name || beforeItem.name != afterItem.name){
-                //Service modified
+            if(beforeItem.value != afterItem.value){
+                //Default folder modified
                 results.push(diffResults.modified(beforeItem, afterItem));
                 return;
             }

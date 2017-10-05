@@ -7,8 +7,7 @@ const fileManager = require('../FilesManager');
 var item = function(obj) {
     var item = {
         id : obj.PSChildName,
-        displayName : obj.DisplayName,
-        displayVersion :  obj.DisplayVersion
+        name : obj['(default)'] 
     };
 
     return item;
@@ -16,8 +15,8 @@ var item = function(obj) {
 
 module.exports = {
     
-    ScannerId : "installedprograms32",
-    ScannerName : trans('scanners.installedprograms32'),
+    ScannerId : "activexcontrols",
+    ScannerName : trans('scanners.activexcontrols'),
 
     buildItem : function(obj){
         return item(obj);
@@ -26,11 +25,10 @@ module.exports = {
     scan : function(){
         let ps = new shell({
             executionPolicy: 'Bypass',
-            noProfile: true,
-            outputEncoding: 'utf8'
+            noProfile: true
           });
         
-          ps.addCommand("Get-ChildItem -Path HKLM:\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | ForEach-Object { Get-ItemProperty $_.pspath } | Select-Object PSChildName, DisplayName, DisplayVersion | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
+          ps.addCommand("(gci Registry::HKEY_CLASSES_ROOT\\CLSID\\*\\Control).PSParentPath | Get-ItemProperty | Select '(default)',PSChildName | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
           return ps.invoke();
     },
 
@@ -43,13 +41,13 @@ module.exports = {
             var afterItem = Enumerable.from(afterList).firstOrDefault(function(x) { return x.id == beforeItem.id });
 
             if(afterItem == null){
-                //Service doesn't exists anymore
+                //Default folder doesn't exists anymore
                 results.push(diffResults.deleted(beforeItem));
                 return;
             }
 
-            if(beforeItem.displayName != afterItem.displayName || beforeItem.displayVersion != afterItem.displayVersion){
-                //Service modified
+            if(beforeItem.name != afterItem.name){
+                //Default folder modified
                 results.push(diffResults.modified(beforeItem, afterItem));
                 return;
             }

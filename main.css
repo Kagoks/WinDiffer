@@ -13,7 +13,7 @@ html, body, .container-fluid{
     height: 50px;
 }
 
-#btnStartScan:hover{
+#btnStartScan:hover, #btnStartCompare:hover, #btnCopyResult:hover{
     cursor: pointer;
 }
 
@@ -98,4 +98,18 @@ html, body, .container-fluid{
 
 .height100{
     height: 100%;
+}
+
+table {
+    table-layout: fixed;
+    font-size: 8pt;
+}
+
+td,th{
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: normal;
+    border: 1px solid black;
+    padding: 5px;
+    max-width: 450px
 }

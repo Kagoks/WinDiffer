@@ -20,6 +20,23 @@ $('a#nav-compare-tab').click(function(){
 $('a#nav-results-tab').click(function(){
     loadResultsTab();       
 });
+
+$('#btnCopyResult').click(function(){
+
+    window.getSelection().removeAllRanges();
+    var range = document.createRange();
+    
+    range.selectNode(document.getElementById("compareResults"));
+    window.getSelection().addRange(range);
+
+    document.execCommand("Copy");
+    notifier.notify({
+        title : "WinDiffer",
+        message : "Résultat copié au presse-papiers"
+    });
+
+    
+});
         
 
 

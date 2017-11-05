@@ -49,7 +49,8 @@
             "beforescan" : "Balayage avant",
             "afterscan" : "Balayage après",
             "startcompare" : "Démarrer la comparaison",
-            "comparerunning" : "Comparaison en cours, merci de patienter..."
+            "comparerunning" : "Comparaison en cours, merci de patienter...",
+            "copyresult" : "Copier le résultat"
         },
 
         "results": {

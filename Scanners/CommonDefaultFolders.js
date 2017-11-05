@@ -1,13 +1,11 @@
 const shell = require('node-powershell')
 const Enumerable = require('linq');
 const diffResults = require('../DiffResults');
-const trans = require('../trans');
-const fileManager = require('../FilesManager');
 
 var item = function(obj) {
     var item = {
-        id : obj.Name,
-        value : obj.Value
+        id : obj.PSChildName,
+        name : obj.FriendlyName
     };
 
     return item;
@@ -16,7 +14,7 @@ var item = function(obj) {
 module.exports = {
     
     ScannerId : "commondefaultfolders",
-    ScannerName : trans('scanners.commondefaultfolders'),
+    ScannerName : "Common Default Folders",
 
     buildItem : function(obj){
         return item(obj);
@@ -28,7 +26,7 @@ module.exports = {
             noProfile: true
           });
         
-          ps.addCommand("Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders' | Select * -ExcludeProperty PSPath,PSParentPath,PSChildName,PSDrive,PSProvider | foreach { $_.PSObject.Properties  } | Select Name,Value | ConvertTo-Json -Compress | Out-File '" + fileManager.getLastScanFileName() + "' -Encoding utf8 -Force");
+          ps.addCommand("Get-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders' | select * -ExcludeProperty PSPath,PSParentPath,PSChildName,PSDrive,PSProvider | ConvertTo-Json -Compress");
           return ps.invoke();
     },
 
@@ -41,13 +39,13 @@ module.exports = {
             var afterItem = Enumerable.from(afterList).firstOrDefault(function(x) { return x.id == beforeItem.id });
 
             if(afterItem == null){
-                //Default folder doesn't exists anymore
+                //Service doesn't exists anymore
                 results.push(diffResults.deleted(beforeItem));
                 return;
             }
 
-            if(beforeItem.value != afterItem.value){
-                //Default folder modified
+            if(beforeItem.name != afterItem.name || beforeItem.name != afterItem.name){
+                //Service modified
                 results.push(diffResults.modified(beforeItem, afterItem));
                 return;
             }

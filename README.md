@@ -3,5 +3,5 @@ Small tool that allow to take snapshop of multiple components of your Windows sy
 Then, allows you to see the difference between two snapshop.
 
 Useful to quickly see what a program is doing when you install it !
-Take snapshot before installation and after the isntallation and see the result !
+Take snapshot before installation and after the installation and see the result !
 

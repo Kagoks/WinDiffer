@@ -1,0 +1,30 @@
+{
+  "name": "windiffelectron",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Kevin Lévesque",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^1.7.5"
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0-beta",
+    "handlebars": "^4.0.10",
+    "iconv-lite": "^0.4.19",
+    "jquery": "^3.2.1",
+    "json-beautify": "^1.0.1",
+    "json-formatter-js": "^2.2.0",
+    "linq": "^3.0.8",
+    "moment": "^2.18.1",
+    "node-notifier": "^5.1.2",
+    "node-powershell": "^3.1.1",
+    "powershell": "^2.2.0",
+    "stringbuilder": "0.0.11",
+    "vue-json-tree-view": "^2.1.1",
+    "windows-powershell": "^0.1.1"
+  }
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="main.css" >
+    <script>
+        const trans = require('./trans');
+    </script>
+  </head>
+  <body>
+
+    <div class="container-fluid">
+        <nav class="nav nav-tabs" id="myTab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-scan-tab" href="#nav-scan" role="tab" aria-controls="nav-scan" aria-expanded="true"><script>document.write(trans('tab.scan'))</script></a>
+            <a class="nav-item nav-link" id="nav-compare-tab" href="#nav-compare" role="tab" aria-controls="nav-compare"><script>document.write(trans('tab.compare'))</script></a>
+            <a class="nav-item nav-link" id="nav-results-tab" href="#nav-results" role="tab" aria-controls="nav-results" aria-expanded="true"><script>document.write(trans('tab.results'))</script></a>            
+        </nav>
+        <div class="tab-content fullheight" id="nav-tabContent">
+
+            <!--SCAN TAB-->
+            <div class="tab-pane fade show active tab-scan fullheight" id="nav-scan" role="tabpanel" aria-labelledby="nav-scan-tab">
+                <div style="flex:1 1 auto;">
+                    <div class="form-check check-all">
+                        <label class="form-check-label">
+                            <input type="checkbox" id="check-all-modules">
+                            <script>document.write(trans('scan.toggleall'))</script>
+                        </label>
+                    </div>
+                    <div class="row modules-container">
+                        <div class="col-sm-6 checkboxes first">
+                        </div>       
+                        <div class="col-sm-6 checkboxes second">
+                        </div>          
+                    </div>
+                </div>   
+                <div style="flex: 0 1 auto; bottom: 0; width:100%">
+                    <div class="large-container center-content">
+                           <button class="btn btn-secondary" id="btnStartScan"><script>document.write(trans('scan.startscan'))</script></button>
+                           <div class="loading loading-scan center-content" style="display:none">
+                                <img src="Ressources/loading_fountain.gif" />
+                            </div> 
+                    </div>         
+        
+                    <div class="large-container center-content card scan-logs-container">
+                            <div class="card-body scan-logs"></div>              
+                    </div>        
+        
+                </div>
+            </div>
+
+            <!--COMPARE TAB-->
+            <div class="tab-pane fade fullheight" id="nav-compare" role="tabpanel" aria-labelledby="nav-compare-tab">
+                <div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="cboBefore"><script>document.write(trans('compare.beforescan'))</script></label>
+                                <select class="form-control" id="cboBefore"></select>
+                            </div>                            
+                        </div>    
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="cboAfter"><script>document.write(trans('compare.afterscan'))</script></label>
+                                <select class="form-control" id="cboAfter"></select>
+                            </div>  
+                        </div>  
+                    </div>
+                </div>   
+                <div class="compare-tab-container">
+                    <div class="row height100">
+                        <div class="col-6 height100">
+                            <div class="card height100">
+                                <div class="card-body scan-result" id="scanResultsBefore"></div>              
+                            </div>                             
+                        </div>    
+                        <div class="col-6 height100">
+                            <div class="card height100">
+                                <div class="card-body scan-result" id="scanResultsAfter"></div>              
+                            </div>  
+                        </div>  
+                    </div>                
+                    
+                    <div class="large-container center-content">
+                        <button class="btn btn-secondary" id="btnStartCompare"><script>document.write(trans('compare.startcompare'))</script></button>
+                        <div class="loading loading-compare center-content" style="display:none">
+                            <img src="Ressources/loading_fountain.gif" />
+                        </div>                     
+                    </div>       
+                </div>
+
+
+            </div>
+
+            <!--RESULTS TAB-->
+            <div class="tab-pane fade fullheight" id="nav-results" role="tabpanel" aria-labelledby="nav-results-tab">
+                <div class="row fullheight">
+                    <div class="col">
+                        <div class="form-group ">
+                            <label for="cboCompare"><script>document.write(trans('results.compareresults'))</script></label>
+                            <select class="form-control fullheight" style="line-height: fullheight" id="cboCompare"></select>
+                        </div>
+                        <button class="btn btn-default" id="btnCopyResult"><script>document.write(trans('compare.copyresult'))</script></button>
+                        <div class="card fullheight">
+                            <div class="card-body scan-result" id="compareResults"></div>              
+                        </div> 
+                    </div>
+                </div>
+            </div>
+    </div>
+
+</div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script>   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src=".\node_modules\handlebars\dist\handlebars.min.js"></script>
+    <script>        
+        const app = require('./App');
+        app.init();
+
+        
+    </script>
+  </body>
+</html>

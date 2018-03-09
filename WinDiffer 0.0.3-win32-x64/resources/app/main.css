@@ -1,0 +1,115 @@
+
+html, body, .container-fluid{
+    height: 100%;
+}
+
+.tab-content{
+    height: 92%
+}
+
+
+#btnStartScan {
+    min-width: 85%;
+    height: 50px;
+}
+
+#btnStartScan:hover, #btnStartCompare:hover, #btnCopyResult:hover{
+    cursor: pointer;
+}
+
+.scan-progressbar{
+    height: 30px;
+}
+
+.large-container{
+    margin: 10px 0px 10px 0px;
+}
+
+.large-container .progress{
+    max-width: 98%;
+    margin: 0 auto;
+}
+
+.center-content{
+    text-align: center;
+}
+
+.scan-logs-container{
+    text-align: left;
+    font-size: small;
+    height: 180px;
+    
+}
+
+.large-container.scan-logs-container{
+    max-width: 98%;
+    margin: 0 auto;
+}
+
+.scan-logs{
+    overflow: auto;
+}
+
+.modules-container{
+    overflow: auto;
+}
+
+.check-all{
+    border-bottom: 1px solid #eee;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.checkboxes .form-check{
+    line-height: 1px;
+}
+
+.tab-content>.active.tab-scan{
+    display: flex;
+    flex-flow: column;
+    height:100%;
+}
+
+.scan-result{
+    height: calc(100% - 70px);
+    overflow: auto;
+}
+
+.json-key    { color: brown; }
+.json-value  { color: navy; }
+.json-string { color: olive; }
+
+
+
+.scan-tab-container{
+
+}
+
+.compare-tab-container{
+    height: calc(100% - 154px);
+}
+
+
+
+.fullheight{
+    height: calc(100% - 42px);
+}
+
+
+.height100{
+    height: 100%;
+}
+
+table {
+    table-layout: fixed;
+    font-size: 8pt;
+}
+
+td,th{
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: normal;
+    border: 1px solid black;
+    padding: 5px;
+    max-width: 450px
+}

@@ -106,7 +106,7 @@ var scansCompleted = function(results){
     
         uiWriter.writeToScanLog(trans('scan.scancompleted') + ".")
     
-        var dir = os.homedir() + "\\WinDiffer\\Snapshots\\";
+        var dir = fileManager.getSnapshotsFilesDir();
     
         mkdirp(dir, function(){
             var dateTime = moment().format("YYYYMMDD_HHmmss");

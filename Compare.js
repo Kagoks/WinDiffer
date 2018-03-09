@@ -3,6 +3,7 @@ const mkdirp = require('mkdirp');
 const moment = require('moment');
 const uiWriter = require('./UIWriter');
 const os = require('os');
+const fileManager = require('./FilesManager');
 var beautify = require("json-beautify");
 
 
@@ -84,7 +85,7 @@ compareCompleted = function(results){
         console.log("Compare completed!")
         console.log(results);
     
-        var dir = os.homedir() + "\\WinDiffer\\Results\\";
+        var dir = fileManager.getResultsFilesDir();
     
         mkdirp(dir, function(){
             var dateTime = moment().format("YYYYMMDD_HHmmss");

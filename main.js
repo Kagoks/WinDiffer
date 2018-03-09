@@ -6,6 +6,21 @@ const BrowserWindow = electron.BrowserWindow
 
 const path = require('path')
 const url = require('url')
+const fs = require("fs");
+const os = require("os");
+const fileManager = require("./FilesManager");
+
+if(!fs.existsSync(os.homedir() + "\\AppData\\Local\\WinDiffer")){
+  fs.mkdirSync(os.homedir() + "\\AppData\\Local\\WinDiffer");
+}
+
+if(!fs.existsSync(fileManager.getSnapshotsFilesDir())){
+  fs.mkdirSync(fileManager.getSnapshotsFilesDir());
+}
+
+if(!fs.existsSync(fileManager.getResultsFilesDir())){
+  fs.mkdirSync(fileManager.getResultsFilesDir());
+}
 
 
 // Keep a global reference of the window object, if you don't, the window will

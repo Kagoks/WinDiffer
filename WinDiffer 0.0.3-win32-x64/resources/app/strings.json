@@ -1,0 +1,128 @@
+{
+    
+    "fr" : {
+        "scanners" : {
+            "activexcontrols" : "Contrôles ActiveX",
+            "availablespacefixeddrives" : "Espace disponibles sur les lecteurs fixes",
+            "commondefaultfolders" : "Dossiers par défaut (Commun)",
+            "commonstartmenu" : "Menu démarrer (Commun)",
+            "installedprograms32" : "Programmes installés (32 bits)",
+            "installedprograms64" : "Programmes installés (64 bits)",
+            "machineexceladdin" : "Modules complémentaires pour Excel (Machine)",
+            "machineoutlookaddin" : "Modules complémentaires pour Outlook (Machine)",
+            "machinewordaddin" : "Modules complémentaires pour Word (Machine)",
+            "pnpsigneddrivers" : "Pilotes Plug and Play signés",
+            "printers" : "Imprimantes",
+            "rootfixeddrives": "Racine des lecteurs fixes",
+            "rootmydocuments": "Racine de Mes Documents",
+            "scheduledtasks": "Tâches planifiées",
+            "services": "Services",
+            "systemenvvariables" : "Variables d'environnement (Système)",
+            "userdefaultfolders" : "Dossiers par défaut (Utilisateur)",
+            "userenvvariables" : "Variables d'environnement (Utilisateur)",
+            "userexceladdin" : "Modules complémentaires pour Excel (Utilisateur)",
+            "useroutlookaddin" : "Modules complémentaires pour Outlook (Utilisateur)",
+            "userwordaddin" : "Modules complémentaires pour Word (Utilisateur)",
+            "userstartmenu" : "Menu démarrer (Utilisateur)"
+        },
+
+        "tab" : {
+            "scan" : "Balayage",
+            "compare" : "Comparaison",
+            "results" : "Résultats"
+        },
+
+        "scan" : {
+            "toggleall" : "Cocher tout",
+            "startscan" : "Démarrer le balayage",
+            "startscanfor" : "Démarrage du balayage pour",
+            "scancompletedfor" : "Fin du balayage pour",
+            "scanrunning" : "Balayage en cours, merci de patienter...",
+            "scancompleted" : "Balayage terminé",
+            "savedfile" : "Sauvegarde dans le fichier",
+            "found" : "Trouvé",
+            "items" : "objets",
+            "noitemsfound" : "Aucun objet trouvé"
+        },
+
+        "compare" : {
+            "beforescan" : "Balayage avant",
+            "afterscan" : "Balayage après",
+            "startcompare" : "Démarrer la comparaison",
+            "comparerunning" : "Comparaison en cours, merci de patienter...",
+            "copyresult" : "Copier le résultat"
+        },
+
+        "results": {
+            "compareresults" : "Résultats de comparaison",
+            "nochange" : "Aucun changement",
+            "added" : "Ajouté",
+            "modifiedbefore" : "Modifié (avant)",
+            "modifiedafter" : "Modifié (après)",
+            "deleted" : "Supprimé"
+        }
+    },
+
+    "en" : {
+        "scanners" : {
+            "activexcontrols" : "ActiveX controls",
+            "availablespacefixeddrives" : "Available space on fixed drives",
+            "commondefaultfolders" : "Default folders (common)",
+            "commonstartmenu" : "Start menu (Common)",
+            "installedprograms32" : "Installed programs (32 bits)",
+            "installedprograms64" : "Installed programs (32 bits)",
+            "machineexceladdin" : "Addins for Excel (Machine)",
+            "machineoutlookaddin" : "Addins for Outlook (Machine)",
+            "machinewordaddin" : "Addins for Word (Machine)",
+            "pnpsigneddrivers" : "Signed Plug and Play drivers",
+            "printers" : "Printers",
+            "rootfixeddrives": "Root of fixed drives",
+            "rootmydocuments": "Root of My Documents",
+            "scheduledtasks": "Scheduled Tasks",
+            "services": "Services",
+            "systemenvvariables" : "Environment Variables (System)",
+            "userdefaultfolders" : "Default folders (User)",
+            "userenvvariables" : "Environment Variables (User)",
+            "userexceladdin" : "Addins for Excel (User)",
+            "useroutlookaddin" : "Addins for Outlook (User)",
+            "userwordaddin" : "Addins for Word (User)",
+            "userstartmenu" : "Start Menu (User)"
+        },
+
+        "tab" : {
+            "scan" : "Scan",
+            "compare" : "Compare",
+            "results" : "Results"
+        },
+
+        "scan" : {
+            "toggleall" : "Toggle all",
+            "startscan" : "Start scan",
+            "startscanfor" : "Start scan for",
+            "scancompletedfor" : "Completed scan for",
+            "scanrunning" : "Scan running, please wait...",
+            "scancompleted" : "Scan completed",
+            "savedfile" : "Saved result in file",
+            "found" : "Found",
+            "items" : "items",
+            "noitemsfound" : "No item found"
+        },
+
+        "compare" : {
+            "beforescan" : "Before scan",
+            "afterscan" : "After scan",
+            "startcompare" : "Start compare",
+            "comparerunning" : "Compare running, please wait..."
+        },
+
+        "results": {
+            "compareresults" : "Compare results",
+            "nochange" : "No change",
+            "added" : "Added",
+            "modifiedbefore" : "Modified (before)",
+            "modifiedafter" : "Modified (after)",
+            "deleted" : "Deleted"
+        }
+    } 
+
+}

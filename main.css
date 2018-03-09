@@ -113,3 +113,15 @@ td,th{
     padding: 5px;
     max-width: 450px
 }
+
+tr.added td:first-child{
+    background-color: rgb(90, 131, 90);
+}
+
+tr.modified td:first-child{
+    background-color: rgb(255, 243, 110);
+}
+
+tr.deleted td:first-child{
+    background-color: rgb(196, 113, 113);
+}

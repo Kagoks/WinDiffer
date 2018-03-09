@@ -5,13 +5,15 @@ module.exports = {
 
     format : function(content){
 
+        console.log(content);
+
         return new Promise(function(resolve, reject){
 
             var data = JSON.parse(content);
 
             var sb = new StringBuilder({ newLine:'\r\n' });
 
-            sb.appendLine("[WinDiffer v.0.0.3]");
+            sb.appendLine("[WinDiffer v.0.0.4]");
             sb.appendLine();
 
             data.forEach(function(diff){
@@ -38,9 +40,7 @@ module.exports = {
                     console.log(baseItem);              
 
                     for (var property in baseItem) {      
-                        if (diff.results[0].oldItem.hasOwnProperty(property)) {
-                            sb.appendLine("<th>" + property + "</th>")  
-                        }
+                        sb.appendLine("<th>" + property + "</th>");                        
                     }
 
                     sb.appendLine("</tr>")
@@ -49,7 +49,7 @@ module.exports = {
  
 
                         if(result.diffType == "Added"){
-                            sb.appendLine("<tr style=\"border-top:2px solid black;\">");
+                            sb.appendLine("<tr style=\"border-top:2px solid black;\" class=\"added\">");
                             sb.appendLine("<td>" + trans('results.added') + "</td>");
                             
                             for (var property in result.newItem) {      
@@ -60,7 +60,7 @@ module.exports = {
                             
                         }
                         else if(result.diffType == "Deleted"){
-                            sb.appendLine("<tr style=\"border-top:2px solid black;\">");
+                            sb.appendLine("<tr style=\"border-top:2px solid black;\" class=\"deleted\">");
                             sb.appendLine("<td>" + trans('results.deleted') + "</td>");
                             
                             for (var property in result.oldItem) {      
@@ -71,7 +71,7 @@ module.exports = {
                         }
                         else if(result.diffType == "Modified"){
 
-                            sb.appendLine("<tr style=\"border-top:2px solid black;\">");
+                            sb.appendLine("<tr style=\"border-top:2px solid black;\" class=\"modified before\">");
                             sb.appendLine("<td>" + trans('results.modifiedbefore') + "</td>");
                             
                             for (var property in result.oldItem) {      
@@ -79,7 +79,7 @@ module.exports = {
                             }
                             sb.appendLine("</tr>");
 
-                            sb.appendLine("<tr style=\"border-bottom:2px solid black\">");
+                            sb.appendLine("<tr style=\"border-bottom:2px solid black\" class=\"modified after\">");
                             sb.appendLine("<td>" + trans('results.modifiedafter') + "</td>");
                             
                             for (var property in result.newItem) {      

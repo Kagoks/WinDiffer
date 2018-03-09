@@ -2,17 +2,26 @@ const os = require('os');
 const fs = require('fs');
 
 
-var snapshotsFilesDir = os.homedir() + "\\WinDiffer\\Snapshots";
-var resultsFilesDir = os.homedir() + "\\WinDiffer\\Results";
-var lastScanFile = os.homedir() + "\\WinDiffer\\scan.json"
+var snapshotsFilesDir = os.homedir() + "\\AppData\\Local\\WinDiffer\\Snapshots\\";
+var resultsFilesDir = os.homedir() + "\\AppData\\Local\\WinDiffer\\Results\\";
+var lastScanFile = os.homedir() + "\\AppData\\Local\\WinDiffer\\scan.json"
 
 
 
 module.exports = {
 
     getLastScanFileName : function(){
-        return os.homedir() + "\\WinDiffer\\scan.json"
+        return lastScanFile;
     }, 
+
+    getSnapshotsFilesDir : function(){
+        return snapshotsFilesDir;
+    },
+
+    getResultsFilesDir : function(){
+        return resultsFilesDir;
+    },
+
     
 
     getSnapshotsFiles : function(){
@@ -75,7 +84,7 @@ module.exports = {
         return new Promise(function(resolve, reject){
             
             var fileContent = "";
-            fs.readFile(os.homedir() + "\\WinDiffer\\scan.json", 'utf8', function(err, content){
+            fs.readFile(lastScanFile, 'utf8', function(err, content){
                 resolve(content);               
             });  
           
